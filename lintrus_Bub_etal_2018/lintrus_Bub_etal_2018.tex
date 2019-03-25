@@ -1,0 +1,169 @@
+\documentclass[12pt,twoside,english,a4paper]{article}
+%
+\usepackage{etex}
+% ----------- Packages ---------------------------------------------
+\usepackage{ifthen}                % if then else Abfragen
+% Boolesche Variable:
+%  True  = Fette Gleichungsvariablen italic (kursiv)
+%  False = Fette Gleichungsvariablen roman (gerade)
+\newboolean{boldeqnitalic}
+\setboolean{boldeqnitalic}{true} 
+
+%\usepackage{german}
+%\usepackage{ngerman}              % Neudeutsch
+%\usepackage{showkeys}
+%\usepackage{draftcopy}
+\usepackage{caption}
+\usepackage[latin1]{inputenc}
+\usepackage[intlimits] {amsmath}   % muss for defjs# stehen
+\usepackage{graphicx}
+\usepackage{psfrag}
+% \usepackage[usenames]{color}
+%\usepackage[xdvi]{color}
+\usepackage{ifthen}
+\usepackage{fancyhdr}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{booktabs}              % Dicke Tabellenlinien
+\usepackage{amssymb}
+\usepackage{amsbsy}
+\usepackage{bm}                    % fette Schrift in Formeln
+\usepackage{bbm}
+\usepackage{babel}
+\usepackage{theorem}
+\usepackage{upgreek}  % gerade (roman) griechische Buchstaben z.B. \upalpha
+\usepackage{pifont}   % zusaetzliche Schriften, z.B. eingekreiste Zahlen
+\usepackage[active]{srcltx}   % aktive suche im xdv
+\usepackage{subcaption}
+
+% Zusaetzliche Schriften --- Anfang
+% \usepackage[T1]{fontenc}
+\usepackage{suetterl}  % Suetterlin Schrift
+\newfont{\suetdbl}{suet14 scaled 2000}  % Suetterlin skaliert um Faktor 2,000
+
+\usepackage{yfonts}  % altdeutsche Schrifte und Initialen
+% nicht oldgerm verwenden, da 'yfonts' T1-encoding haben
+\newfont{\gothdbl}{ygoth scaled 2000} 
+\newfont{\frakdbl}{yfrak scaled 2000}
+\newfont{\swabdbl}{yswab scaled 2000}
+% Zusaetliche Schriften --- Ende
+
+
+% Korrekturfunktionen --- Anfang
+\usepackage[normalem]{ulem}  % zusaetzliche Unterstreichungsformen wie z.B.:
+                             %  \uline \uuline \uwave \sout \xout
+                             % Option 'normalem' deaktiviert die 
+                             % Hervorhebung durch Unterstreichen
+\usepackage[textsize=footnotesize,textwidth=1.7cm]{todonotes}
+\setlength{\marginparwidth}{6cm}
+\newcommand{\Crem}[1]{\textcolor{red}{\sout{#1}}}
+\newcommand{\Cadd}[1]{\textcolor{blue}{\uline{#1}}}
+\newcommand{\Cmod}[1]{\textcolor{green}{\dashuline{#1}}}
+% Korrekturfunktionen -- Ende
+
+\usepackage{defjs3}                % eigene Definitionen  
+\newcommand{\cb}[1]{\overline{{\cal #1}}}   
+\newcommand{\cbb}[1]{\boldsymbol{\overline{{\cal #1}}}}   
+
+
+%\usepackage[latin1]{inputenc}
+%
+%-------------------------------------------------------------------
+%\definecolor{mygrey}{gray}{0.75}
+%
+% --------- References Packages ----------------------------------------
+\usepackage[authoryear]{natbib}
+\bibpunct{[}{]}{,}{a}{}{;}
+% Use the command \bibpunct with one optional and 6 mandatory arguments:
+%    1. the opening bracket symbol, default = (
+%    2. the closing bracket symbol, default = )
+%    3. the punctuation between multiple citations, default = ;
+%    4. the letter `n' for numerical style, or `s' for numerical
+%       superscript style, any other letter for author-year,
+%       default = author-year;
+%    5. the punctuation that comes between the author names and the year
+%    6. the punctuation that comes between years or numbers when
+%       common author lists are suppressed (default = ,);
+%
+% --------- Seitenlayout -----------------------------------------------
+\sloppy
+\oddsidemargin   0.30cm            % linker Rand ungerade Seiten
+\evensidemargin  0.30cm            % linker Rand gerade Seiten (twoside)
+\topmargin       0.15cm            % OK Blatt - OK Kopfzeile
+\topmargin      -1.35cm            % OK Blatt - OK Kopfzeile bei PS
+\headheight      0.15cm            % Hhe der Kopfzeile
+\headsep         0.70cm            % UK Kopfzeile - OK Rumpf
+\topskip         0.60cm            % OK Rumpf - UK Textzeile
+\textheight     24.50cm            % Texthhe
+\textwidth      16.00cm            % Textbreite
+\footskip        1.00cm            % Uk Rumpf - UK Fu{\'a}zeile
+\fboxsep.3cm                       % Rahmenaufweitung 0.3cm
+\setlength{\parindent}{0.0cm}      % Einzug 1. Zeile eines Absatzes
+\setlength{\parskip}{1.ex}         % Abstand zweier Abs"atze
+\setcounter{secnumdepth}{4}        % Tiefe der section Nummern
+%
+% -------- Kopfzeilen -------------------------------------------------
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\renewcommand{\MakeUppercase}[1]{#1}    % Kopfzeilen nicht in gross
+\fancyhead{}                            % Kopfzeile
+\fancyhead[re] {\thepage}
+\fancyhead[ro] {\thepage}
+\fancyhead[ce] {\slshape 
+AceGen and AceFEM integration of linear truss elements
+}
+\fancyhead[co] {\slshape  Max Bubendey, Sascha Maassen, J\"org Schr\"oder}
+\fancyfoot{}                            % Fusszeile
+%\fancyfoot[c]{\sffamily\small Version vom \today}
+\fancypagestyle{plain}{%
+  \fancyhead{}%
+  \fancyfoot[c]{\sffamily\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+\makeatletter                           % Leere Fuellseiten
+\def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
+  \hbox{}
+  \vspace*{\fill}
+  \thispagestyle{empty}
+  \newpage
+  \if@twocolumn\hbox{}\newpage\fi\fi\fi}
+\makeatother
+%\renewcommand{\chaptermark}[1]{\markboth {\chaptername\ \thechapter.\ #1}{}}
+%\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+%
+% ----------- Einbinden von Gleitobjektion ---------------------------
+\setcounter{topnumber}{10}
+\setcounter{bottomnumber}{10}
+\setcounter{totalnumber}{10}
+\renewcommand{\topfraction}{1.}
+\renewcommand{\bottomfraction}{1.}
+\renewcommand{\textfraction}{0.}
+%
+%----------- Trennungsvorgaben -------------------------------------
+%\hyphenation{Span-nungs}
+%\hyphenation{Ver-zer-rungs}
+%
+%------------ neue Definitionen ------------------------------------
+%\newcommand{\IS}{{\rm\kern.24em         %fourth order Eshelby tensor
+%   \vrule width.02em height1.4ex depth-.05ex
+%   \kern-.26em S}}
+% \newcommand{\M}{\mathbb{M}}
+%-------------------------------------------------------------------
+\begin{document}
+\unitlength1.0cm
+\frenchspacing
+%\include{cover/cover}
+\include{sec_truss/sec_truss}
+%\include{} 
+% ------- layout-datei --------------
+\bibliographystyle{plainnat}
+%\bibliographystyle{plaindin}
+%\bibliographystyle{plaindin_shortname2}
+%\bibliographystyle{elsarticle-num-names}
+% ------- bib-datei --------------
+%\bibliography{bibliography/bibfile01}
+%\begin{appendix}
+
+%\end{appendix}
+\end{document}
+-

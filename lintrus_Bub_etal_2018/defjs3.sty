@@ -1,0 +1,722 @@
+%-----------------------------------------------------------------------
+%
+%                    Style--File fuer Publikationen
+%                                des
+%                      Instituts fuer Mechanik 
+%      Fakultaet fuer Ingenieurwissenschaften - Abtl. Bauwissenschaften
+%                  Prof. Dr.-Ing. habil. Joerg Schroeder
+%
+%   Revised 10/03/2010  Joerg Schroeder
+%   Revised 10/03/2010  put new symbols for Homogenization, JS
+%
+% Modifikation:
+%   DoBr 07-jun-2010: Abaenderung des Befehls \boldvars
+%   DoBr 08-jun-2010: Abaenderung des Befehls \kr
+%   DoBr 12-aug-2010: Zusaetzliche {} in der Definition 
+%                     von \Btime und \Bnull
+%   DoBr 06-sep-2010: Korrektur der Befehel \devb und \Devb
+%   DoBr 07-jan-2012: Neue Befehle \cdotu, \cdotd, \cdott, \cdotn, \cotx
+%   DoBr 29-jul-2013: Kompaiblitaet zu pdflatex (package: pst-all)
+%   DoBr 30-jul-2013: Kompaiblitaet zu ppower4-Vortraegen
+%-----------------------------------------------------------------------
+%%%Benoetigte Pakete/Variablen:
+% \usepackage{ifthen}
+% % Boolesche Variable:
+% % True  = Fette Gleichungsvariablen italic (kursiv)
+% % False = Fette Gleichungsvariablen roman (gerade)
+% \newboolean{boldeqnitalic}
+% \setboolean{boldeqnitalic}{true} 
+%
+%-----------------------------------------------------------------------
+\RequirePackage{bm}
+\RequirePackage{bbm}
+\RequirePackage{amsopn}
+\RequirePackage{relsize}
+\RequirePackage{ifthen}
+\RequirePackage{ifpdf}
+
+\ifpdf\else
+\RequirePackage{pst-all}
+\fi
+
+
+%-----------------------------------------------------------------------
+%   Count Sections and Equation Numbers.
+%   Structure:  \sect{         SECTION         - TITLE }
+%                 \ssect{      SUB-SECTION     - TITLE }
+%                   \sssect{   SUB-SUB-SECTION - TITLE }
+%                     \ssssect{SUB-SUB-SUB-SECTION - TITLE }
+%               \sectA{      APPENDIX        - TITLE }
+%               \eb    .................Gleichungsnummer
+%                 FORMULA
+%                 \label{NAME}
+%               \ee
+%               \ebn   ................keine Gleichungsnummer
+%                 FORMULA
+%                 \label{NAME}
+%               \een
+%   Modification for Count of Equation Numbers.
+%   Structure:  \secta{       SECTION         - TITLE }
+%               see latex description
+%
+% Ansprache der Formel im Text mit: (\ref{NAME})
+%-----------------------------------------------------------------------
+%
+%-----------------------------------------------------------------------
+% Documentclass abhaengige Anpassungen
+%-----------------------------------------------------------------------
+\makeatletter
+\@ifclassloaded{foils}
+%%% Anpassungen, die NUR fuer documentclass(foils) ge,acht werden duerfen
+{
+%% pp4slide.sty                                    10 Feb 2000
+%%------------------------------------------------------------
+%% initally named     pdfslide.sty                on 30 Aug 99
+%% renamed to avoid conflict with other package.
+%%
+%% Adapt foiltex to be used to prepare slides in pdf format
+%% using backgrounds and partial builds.
+%%
+%% Disable some pdf commands, when not used in pdf(la)tex.
+%%
+%% Special (PDF) effects:
+%% - make background blue, write normally in white and
+%%   headings in yellow.
+%% - use colorful labels in itemized lists.
+%% - avoid footline usage, because that would interfere with
+%%   partial builds of a page. Move the page number to the
+%%   upper right corner. This means also suppression of Logo
+%%   etc.
+%% - make sure that links are displayed in text color, not
+%%   with frames.
+%% - Do not use paragraph indentation and justified text on
+%%   slides (shouldn't that be the default?)
+\rightfooter{} % no more page numbers bottom right
+\MyLogo{} % no logo bottom left
+\rightheader{\rlap{\quad\textsf{\tiny\thepage}}} % page number
+\parindent 0pt % do not indent paragraphs
+\rightskip 0pt plus 1fil % allow ragged right
+%% select colors
+\RequirePackage{color}
+%%   for the frames/page numbers etc.
+%\renewcommand\Black{\color{white}}
+\renewcommand\Black{\color{blue}}
+%%   for the headline etc.
+\renewcommand\normalcolor{\color{black}}
+%%   for the background
+\pagecolor{white}
+%%   for the text
+\color{black}
+%% choose some colored item labels
+\renewcommand{\labelitemi}{\textcolor{black}{$\bullet$}}
+\renewcommand{\labelitemii}{\textcolor{black}{$\star$}}
+\renewcommand{\labelitemiii}{\textcolor{black}{$\ast$}}
+\renewcommand{\labelitemiv}{\textcolor{black}{$\circ$}}
+% Make hyperlinks colored, not framed, if hypersetup is used
+\ifx\hypersetup\undefined\relax\else
+\hypersetup{colorlinks=true}
+\fi
+}
+%%% Anpassungen, die NICHT fuer documentclass(foils) ge,acht werden duerfen
+{
+% Aenderung der Schriftgr\"osse der Section--Titel
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\normalfont\large\bfseries}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\normalsize\bfseries}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+                                     {3.25ex \@plus1ex \@minus.2ex}%
+                                     {-1em}%
+                                     {\normalfont\normalsize\bfseries}}
+%
+% chapters..............................................................
+\newcommand {\sect}{\section}                   % Sections
+% set second counter of equation, figure, table numbers equal zero (x.i)
+\newcommand {\secta}{
+                     \setcounter{equation}{0}
+                     \setcounter{table}{0}
+                     \setcounter{figure}{0}
+                     \section
+                     }
+%\renewcommand{\theequation}{\thesection.\arabic{equation}}
+%\renewcommand{\thefigure}{\thesection.\arabic{figure}}
+%\renewcommand{\thetable}{\thesection.\arabic{table}}
+%
+\newcommand {\ssect}{\subsection}
+\newcommand {\sssect}{\subsubsection}
+\newcommand {\ssssect}{\subsubsubsection}
+}
+\makeatother
+%
+% neue Thebibliography -- Umgebung .....................................
+\makeatletter
+\newenvironment{Thebibliography}[1]
+     {
+%\sect{\refname
+%        \@mkboth{\MakeUppercase\refname}{\MakeUppercase\refname}}%
+      \list{\@biblabel{\@arabic\c@enumiv}}%
+           {\settowidth\labelwidth{\@biblabel{#1}}%
+            \leftmargin\labelwidth
+%
+% In diesem Bereich ist das Format von thebibliography zu veraendern
+% (vergleiche Attribute der list-Umgebung)
+            \setlength{\parsep}{-0.15cm}
+            \setlength{\leftmargin}{0.4cm}
+            \setlength{\rightmargin}{0.0cm}
+%
+            \advance\leftmargin\labelsep
+            \@openbib@code
+            \usecounter{enumiv}%
+            \let\p@enumiv\@empty
+            \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+      \sloppy
+      \clubpenalty4000
+      \@clubpenalty \clubpenalty
+      \widowpenalty4000%
+      \sfcode`\.\@m}
+     {\def\@noitemerr
+       {\@latex@warning{Empty `thebibliography' environment}}%
+      \endlist}
+\makeatother
+%
+% equations.............................................................
+\newcommand {\eb}{\begin{equation}}       % mit Gleichungsnummer
+\newcommand {\ee}{\end{equation}}
+\newcommand {\ebn}{\begin{displaymath}}   % ohne Gleichungsnummer
+\newcommand {\een}{\end{displaymath}}
+\newcommand {\eab}{\begin{eqnarray}}      % Array mit Gleichungsnummer
+\newcommand {\eae}{\end{eqnarray}}
+\newcommand {\eabn}{\begin{eqnarray*}}    % Array ohne Gleichungsnummer
+\newcommand {\eaen}{\end{eqnarray*}}
+%\newcommand {\fboxeb}[1]{\begin{equation}
+%                      \fbox{#1}
+%\newcommand {\fboxee}{\end{equation}}
+%
+% Gleitobjekte
+\newcommand{\setfigcapstyle}{\renewcommand{\captionlabelfont}{\footnotesize\bf}
+                             \renewcommand{\captionfont}{\footnotesize}
+                             \setlength{\captionmargin}{1cm}}
+\newcommand{\settabcapstyle}{\renewcommand{\captionlabelfont}{\footnotesize\bf}
+                             \renewcommand{\captionfont}{\footnotesize}
+                             \setlength{\captionmargin}{1cm}}
+\newcommand{\setnormcapstyle}{\renewcommand{\captionlabelfont}{\normalsize\bf}
+                             \renewcommand{\captionfont}{\normalsize}
+                             \setlength{\captionmargin}{0cm}}
+
+\newenvironment{Figure}[1][0]{\setfigcapstyle \begin{figure}[#1]}
+                             {\end{figure} \setnormcapstyle}
+
+\newenvironment{Table}[1][0]{\settabcapstyle \begin{table}[#1]}
+                            {\end{table} \setnormcapstyle}
+
+% allgemeine Vereinfachungen.............................................
+\newcommand {\af}{\sc}                    % \sc
+\newcommand {\ce}{\centerline}            % centerline
+\newcommand {\Disp}{\displaystyle}        % Disp
+\providecommand {\dfrac}{\Disp\frac}      % Disp und frac
+\newcommand {\ul}{\underline}             % underline
+%
+%-----------------------------------------------------------------------
+%   BOLD FACE GREEK:  All In Format: \B***** .
+%-----------------------------------------------------------------------
+\def\pmb#1{\setbox0=\hbox{#1}%
+  \kern-.025em\copy0\kern-\wd0
+  \kern.05em\copy0\kern-\wd0
+  \kern-.025em\raise.0433em\box0 }
+%
+\newcommand{\BGamma     }{{\bm{\Gamma      }}}
+\newcommand{\BDelta     }{{\bm{\Delta      }}}
+\newcommand{\BTheta     }{{\bm{\Theta      }}}
+\newcommand{\BLambda    }{{\bm{\Lambda     }}}
+\newcommand{\BXi        }{{\bm{\Xi         }}}
+\newcommand{\BPi        }{{\bm{\Pi         }}}
+\newcommand{\BSigma     }{{\bm{\Sigma      }}}
+\newcommand{\BUpsilon   }{{\bm{\Upsilon    }}}
+\newcommand{\BPhi       }{{\bm{\Phi        }}}
+\newcommand{\BPsi       }{{\bm{\Psi        }}}
+\newcommand{\BOmega     }{{\bm{\Omega      }}}
+\newcommand{\Balpha     }{{\bm{\alpha      }}}
+\newcommand{\Bbeta      }{{\bm{\beta       }}}
+\newcommand{\Bgamma     }{{\bm{\gamma      }}}
+\newcommand{\Bdelta     }{{\bm{\delta      }}}
+\newcommand{\Bepsilon   }{{\bm{\epsilon    }}}
+\newcommand{\Bzeta      }{{\bm{\zeta       }}}
+\newcommand{\Beta       }{{\bm{\eta        }}}
+\newcommand{\Btheta     }{{\bm{\theta      }}}
+\newcommand{\Biota      }{{\bm{\iota       }}}
+\newcommand{\Bkappa     }{{\bm{\kappa      }}}
+\newcommand{\Blambda    }{{\bm{\lambda     }}}
+\newcommand{\Bmu        }{{\bm{\mu         }}}
+\newcommand{\Bnu        }{{\bm{\nu         }}}
+\newcommand{\Bxi        }{{\bm{\xi         }}}
+\newcommand{\Bpi        }{{\bm{\pi         }}}
+\newcommand{\Brho       }{{\bm{\rho        }}}
+\newcommand{\Bsigma     }{{\bm{\sigma      }}}
+\newcommand{\Btau       }{{\bm{\tau        }}}
+\newcommand{\Bupsilon   }{{\bm{\upsilon    }}}
+\newcommand{\Bphi       }{{\bm{\phi        }}}
+\newcommand{\Bchi       }{{\bm{\chi        }}}
+\newcommand{\Bpsi       }{{\bm{\psi        }}}
+\newcommand{\Bomega     }{{\bm{\omega      }}}
+\newcommand{\Bvarepsilon}{{\bm{\varepsilon }}}
+\newcommand{\Bve        }{{\bm{\varepsilon }}}% doppelt definiert
+\newcommand{\Bvartheta  }{{\bm{\vartheta   }}}
+\newcommand{\Bvarpi     }{{\bm{\varpi      }}}
+\newcommand{\Bvarrho    }{{\bm{\varrho     }}}
+\newcommand{\Bvarsigma  }{{\bm{\varsigma   }}}
+\newcommand{\Bvarphi    }{{\bm{\varphi     }}}
+%
+%-----------------------------------------------------------------------
+%   GREEK:
+%-----------------------------------------------------------------------
+%
+\def\ve {{\varepsilon}}
+\def\Bve {{\Bvarepsilon}}
+%
+%-----------------------------------------------------------------------
+%   BOLD FACE MATH 
+%-----------------------------------------------------------------------
+%
+% Boldface variables depending of boolean variable 'boldeqnitalic'
+\ifthenelse{\boolean{boldeqnitalic}}
+{\newcommand{\boldvars}[1]{{\bm{#1}}}}% true
+{\newcommand{\boldvars}[1]{{\bm{\mathrm{#1}}}}}% false
+
+
+
+\newcommand{\bA}{{\boldvars{A}}}
+\newcommand{\bB}{{\boldvars{B}}}
+\newcommand{\bC}{{\boldvars{C}}}
+\newcommand{\bD}{{\boldvars{D}}}
+\newcommand{\bE}{{\boldvars{E}}}
+\newcommand{\bF}{{\boldvars{F}}}
+\newcommand{\bG}{{\boldvars{G}}}
+\newcommand{\bH}{{\boldvars{H}}}
+\newcommand{\bI}{{\boldvars{I}}}
+\newcommand{\bJ}{{\boldvars{J}}}
+\newcommand{\bK}{{\boldvars{K}}}
+\newcommand{\bL}{{\boldvars{L}}}
+\newcommand{\bM}{{\boldvars{M}}}
+\newcommand{\bN}{{\boldvars{N}}}
+\newcommand{\bO}{{\boldvars{O}}}
+\newcommand{\bP}{{\boldvars{P}}}
+\newcommand{\bQ}{{\boldvars{Q}}}
+\newcommand{\bR}{{\boldvars{R}}}
+\newcommand{\bS}{{\boldvars{S}}}
+\newcommand{\bT}{{\boldvars{T}}}
+\newcommand{\bU}{{\boldvars{U}}}
+\newcommand{\bV}{{\boldvars{V}}}
+\newcommand{\bW}{{\boldvars{W}}}
+\newcommand{\bX}{{\boldvars{X}}}
+\newcommand{\bY}{{\boldvars{Y}}}
+\newcommand{\bZ}{{\boldvars{Z}}}
+%
+\newcommand{\ba}{{\boldvars{a}}}
+\newcommand{\bb}{{\boldvars{b}}}
+\newcommand{\bc}{{\boldvars{c}}}
+\newcommand{\bd}{{\boldvars{d}}}
+\newcommand{\be}{{\boldvars{e}}}
+\newcommand{\bbf}{{\boldvars{f}}}
+\newcommand{\bg}{{\boldvars{g}}}
+\newcommand{\bh}{{\boldvars{h}}}
+\newcommand{\bi}{{\boldvars{i}}}
+\newcommand{\bj}{{\boldvars{j}}}
+\newcommand{\bk}{{\boldvars{k}}}
+\newcommand{\bl}{{\boldvars{l}}}
+\newcommand{\bbm}{{\boldvars{m}}}
+\newcommand{\bn}{{\boldvars{n}}}
+\newcommand{\bo}{{\boldvars{o}}}
+\newcommand{\bp}{{\boldvars{p}}}
+\newcommand{\bq}{{\boldvars{q}}}
+\newcommand{\br}{{\boldvars{r}}}
+\newcommand{\bs}{{\boldvars{s}}}
+\newcommand{\bt}{{\boldvars{t}}}
+\newcommand{\bu}{{\boldvars{u}}}
+\newcommand{\bv}{{\boldvars{v}}}
+\newcommand{\bw}{{\boldvars{w}}}
+\newcommand{\bx}{{\boldvars{x}}}
+\newcommand{\by}{{\boldvars{y}}}
+\newcommand{\bz}{{\boldvars{z}}}
+%
+%-------  mathbb ---------------------------------
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\MM}{\mathbb{M}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\RR}{\mathbb{R}}
+%
+%-----------------------------------------------------------------------
+%   BOLD FACE MATH ITALIC (schraeg), Format: \fit{*} oder \olfit{*}
+%-----------------------------------------------------------------------
+%
+\newcommand{\fit}[1]{{\bm{#1}}}
+\newcommand{\olfit}[1]{\overline{\bm{#1}}}
+%
+%-----------------------------------------------------------------------
+%   BOLD FACE MATH Latin (gerade),   Format: \fla{*} oder \olfla{*}
+%-----------------------------------------------------------------------
+%
+\newcommand{\fla}[1]{{\bm{\mathrm{#1}}}}
+\newcommand{\olfla}[1]{{\overline{\bm{\mathrm{#1}}}}}
+%
+%-----------------------------------------------------------------------
+%   Mathematische Akzente:  All In Format: \st{*}
+%-----------------------------------------------------------------------
+%
+\newcommand{\ostar}[1]{\overset{\star}{#1}}           % star^{.....}
+\newcommand{\oast}[1]{\overset{\ast}{#1}}             % ast^{.....}
+\newcommand{\otriangle}[1]{\overset{\triangle}{#1}}   % triangle^{.....}
+\newcommand{\oDelta}[1]{\overset{\Delta}{#1}}         % Delta^{.....}
+\newcommand{\ov}[2]{\overset{#1}{#2}}                 % {,,,}^{.....}
+%
+%=======================================================================
+%   M A T H   S Y M B O L S   ( C O N T I )
+%=======================================================================
+%
+% partial derivatives......................................................
+\newcommand{\p}[1] { \partial_{#1} }                  %dervative by tensor
+\newcommand{\pp}[2]{ \frac{\partial{#1}} {\partial{#2}} }  
+\newcommand{\ppp}[2]{ \frac{\partial^2{#1}} {\partial{#2}} }  
+\newcommand{\pppp}[3]{ \frac{\partial^2{#1}} {\partial{#2} \partial{#3}} }
+% total derivatives
+\newcommand{\dd}[2]{ \frac{d{#1}}        {d{#2}}        }  %Leibniz derivative
+\newcommand{\ddt}{{\pp{}{t}}}                              %\partial/\partial t
+%
+% mappings..............................................................
+\newcommand{\map}[3]{ {#1}:{#2} \to {#3} }       %map, domains
+\newcommand{\maps}[3]{ {#1}:{#2} \mapsto {#3} }  %map, images
+\newcommand{\phit}{\Bvarphi_t}                   %\phi_t
+%
+% Ueberschiebungen
+\DeclareMathOperator{\cdotu}{\cdot}
+\DeclareMathOperator{\cdotd}{:}
+\DeclareMathOperator{\cdott}{\therefore}
+\newcommand{\cdotn}{\stackrel{(n)}{\cdotu}}
+\newcommand{\cdotx}[1]{\stackrel{(#1)}{\cdotu}}
+%
+% topology..............................................................
+\newcommand{\B}{{\cal B}}                         %Referenzkonfiguration
+\newcommand{\Bt}{{\cal S}}                        %Momentankonfiguration
+\newcommand{\Bnull}{{{\cal B}_0}}                 %Referenzkonfiguration
+\newcommand{\Btime}{{{\cal B}_t}}                 %Momentankonfiguration
+\newcommand{\OG}{{\cal O}}
+\newcommand{\SOG}{{\cal SO}}
+\newcommand{\MO}{{\cal MO}}
+\newcommand{\F}{{\cal F}}
+\newcommand{\RVE}{{\cal V}}     %Referenzkonfiguration der Mikrostruktur
+%
+\newcommand{\jumpl}{{[\kern-.15em[}}
+\newcommand{\jumpr}{{]\kern-.15em]}}
+%
+% Lie-derivatives........................................................
+\newcommand{\Lieder}{\mbox{\boldmath${\pounds}$}}%symbol for LIE derivative
+\newcommand{\Lied}{{\Lieder_{\triangle}}}       %L_triangle
+\newcommand{\Liev}{{\Lieder_{\bv}}}             %L_v
+\newcommand{\Lvg}{{\Liev \bg}}                  %L_v g
+\newcommand{\tiLiev}{{\tilde{\Lieder}_{\bv} }}  %\tilde L_v
+\newcommand{\tiLvg}{{\tilde{\Lieder}_{\bv} \bg}}%\tilde L_v g
+\newcommand{\barLiev}{{\bar{\Lieder}_{\bv} }}   %\bar L_v
+\newcommand{\Lievp}{{\Lieder_{\bv}^p}}          %L_v^p
+\newcommand{\Liedp}{{\Lieder_{\bv}^p}}          %L_v^p
+\newcommand{\Lvtau}{{\Liev \Btau}}              %L_v tau
+\newcommand{\Lvb}{{\Liev \bbb}}                 %L_v b
+\newcommand{\Lvbe}{{\Liev \bbb^e}}              %L_v b^e
+\newcommand{\Lvpce}{{\Lievp \bC^e}}             %L_v C^e
+\newcommand{\Lvpse}{{\Lievp \bS^e}}             %L_v^p S^e
+\newcommand{\Lvpseb}{{\Lievp \bar\bS}}          %L_v^p \barS
+%
+% Tangent map............................................................
+\def\Ft{{\bF_t}}                % tangent map at time t
+\def\phitX{{\phit(\bX)}}            % point x: image of X at t
+\def\phitB{{\phit(\B)}}             % current configuration S: image of B at t
+\def\pull{{\it 'pull-\-back' }}     % Pull-Back
+\def\push{{\it 'push-\-forward' }}  % Push-Forward
+%
+% deformationtensors.....................................................
+\def\Cbar{{\bar{\bC}_t}}           % elastic right Cauchy Green
+\def\dotCbar{\dot{\bar{\bC}}_t}    % elastic right Cauchy Green, rate
+\def\LvpCbar{{\Lievp \bar{\bC}_t}} % elastic right Cauchy Green, plastic Lie
+% timederivatives........................................................
+\def\Lpbar{\bar{\bL}_t^p}          % plastic velocity gradient
+\def\Lpbart{\bar{\bL}_t^{pT}}      % plastic velocity gradient, transposed
+\def\Dpbar{\bar{\bD}_t}            % plastic rate of deformation
+\def\Wpbar{\bar{\bW}_t}            % plastic spin
+%
+% Tangent--Spaces........................................................
+\def\TBX{{T_{X}\B}}               % tangent space of B at X
+\def\CBX{{T_{X}^{\ast}\B}}        % cotangent space of B at X
+\def\TIN{{\bar{T}_{X}\B}}         % vector space at X,intermediate config.
+\def\CIN{{\bar{T}_{X}^{\ast}\B}}  % dual vector space at X,intermediate config.
+\def\TSx{{T_{x}\phitB}}           % tangent space of S at x
+\def\CSx{{T_{x}^{\ast}\phitB}}    % cotangent space of S at x
+%
+% Neighborhoods..........................................................
+\def\NX{{\cal N}_{X}}         % neighborhood of X
+\def\INT{\bar{\cal N}_{X}}    % intermediate configuration
+\def\Nx{{\cal N}_{x}}         % neighborhood of x
+%
+% nablas.................................................................
+\def\nablaX#1{{\nabla}_{X}{#1}}     % Grad, material gradient
+\def\nablax#1{{\nabla}_{x}{#1}}     % grad, spatial gradient
+%
+% Begin: Definitionen von P. Neff
+%-------  Raeume, etc ---------------------------
+\newcommand{\Lp}[1]{L^{#1}(\Omega)}
+\newcommand{\Wmp}[2]{W^{#1,#2}(\Omega)}
+\newcommand{\Hmp}[2]{H^{#1,#2}(\Omega)}
+\newcommand{\Hmpo}[2]{H_{\circ}^{#1,#2}(\Omega)}
+\newcommand{\Co}{C_0^{\infty}(\Omega)}
+\newcommand{\Cgam}{C^\infty(\Omega,\Gamma)}
+\newcommand{\qed}{\hfill $\blacksquare$\\}
+\newcommand{\qeda}{\tag*{$\blacksquare$} }
+\newcommand{\Psym}{P\mathbb{S}ym}
+%
+%-------  Normen ---------------------------------
+\newcommand{\abs}[1]{|#1|}
+\newcommand{\norm}[1]{\|#1\|}
+\newcommand{\HmpOnorm}[3]{{\|#1\|}_{#2,#3,\Omega}}
+\newcommand{\LpOnorm}[2]{{\|#1\|}_{#2,\Omega}}
+\newcommand{\Skalint}[2]{{\langle #1,#2\rangle}_{\Omega}}
+\newcommand{\Skalprod}[2]{\langle #1,#2\rangle}
+\newcommand{\rSkalprod}[2]{ {\langle #1,#2\rangle}^{\bullet} }
+\newcommand{\Mprod}[2]{ {\langle #1 ,#2\rangle} }
+\newcommand{\MSkalprod}[2]{ {\langle #1,#2\rangle}_{\MM^{3\times3}} }
+\newcommand{\Rprod}[2]{ {\langle #1,#2\rangle}_{\RR^{3}} }
+\newcommand{\RSkalprod}[2]{ {\langle #1,\!#2\rangle}_{\RR^{3}} }
+\newcommand{\rLpOnorm}[2]{ {{\|#1\|}_{#2,\Omega}^{\bullet}} }                 
+\newcommand{\rHnorm}[1]{ {{\rule[-0.1cm]{0.025cm}{0.45cm}#1
+                      \rule[-0.1cm]{0.025cm}{0.45cm} }_{\Omega}^{\bullet}} }
+\newcommand{\Mnorm}[1]{ {{\|#1\|}_{\MM^{3\times3}} } }   
+\newcommand{\Rnorm}[1]{ {{\|#1\|}_{\RR^3}} }
+\newcommand{\Mnnorm}[2]{ {{\|#1\|}_{#2,\MM^{3\times3}} }} 
+% End: Definitionen von P. Neff
+%
+% special operators.....................................................
+%
+%             Font fuer Assembly-Operator
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%                           m_H
+%%%%   Definition von          A      ------>   \Assem
+%%%                           e=1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newfont{\Sf}{cmssbx10 scaled 2074}
+%% Assembly Operator
+%\newcommand {\Assem}{\unitlength=1mm\begin{picture}(8,7)\put(0,-3){
+%       $\stackrel{\stackrel{\mbox{\tiny nele}}{\mbox{\Sf A}}}{
+%\mbox{\tiny $e=1$}}$}\end{picture}}
+%% Assembly Operator AS
+\newcommand {\Assem}{\unitlength=1mm\begin{picture}(8,7)\put(0,-4){
+       $\stackrel{\stackrel{\mbox{\tiny $num_{ele}$}}{\mbox{\Sf
+A}}}{\mbox{\tiny e = 1}}$}\end{picture} \; }
+%% Assembly Operator ohne elemente JS
+\newcommand {\Assemjs}{\unitlength=1mm\begin{picture}(8,7)\put(0,-4){
+       $\stackrel{\stackrel{\mbox{\small \phantom{$num_{ele}$}}}{\mbox{\Sf
+A}}}{\mbox{\small e }}$}\end{picture}}
+%% Assembly Operator mit benutzdefinierten Eintraegen
+\newcommand{\Assemarg}[2]{{%
+  \underset{\mathsmaller{#1}}{\overset{\mathsmaller{#2}}%
+  {\raisebox{-0.5ex}{\sffamily\bfseries\larger[3]{A}}}}\;%
+  }}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%%   Definition von          A      ------>   \Assemo
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Assembly Operator ohne Elemente
+%%\newcommand {\Assemo}{\unitlength=1mm\begin{picture}(8,7)\put(0,-3){
+%%       $\stackrel{\stackrel{\mbox{\tiny }}{\mbox{\Sf A}}}{\mbox{\tiny
+%%}}$}\end{picture}}
+%% Assembly Operator ohne Elemente
+\newcommand {\Assemo}{\unitlength=1mm\begin{picture}(8,7)\put(0,-4){
+       $\stackrel{\stackrel{\mbox{\small }}{\mbox{\Sf A}}}{\mbox{\small
+}}$}\end{picture} \; }
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\bone{{\bf 1}}           % bold 1
+\def\bzero{{\bf 0}}          % bold 0
+
+% Mathematische Operatoren
+% 'b'-Kommandos erzeugen 'boxed'-Argumente (eckige Klammern)
+\def\adj{\operatorname{adj}}      % adj  ohne Argument
+\def\Adj{\operatorname{Adj}}      % Adj  ohne Argument
+\def\adjb#1{\adj[{#1}]}           % adjugate boxed Argument Adj[#]
+\def\Adjb#1{\Adj[{#1}]}           % Adjugate boxed Argument Adj[#]
+\def\Cof{\operatorname{Cof}}      % Cof  ohne Argument
+\def\Cofb#1{\Cof[{#1}]}           % Cofactor boxed Argument Cof[#]
+\def\det{\operatorname{det}}      % det  ohne Argument
+\def\Det{\operatorname{Det}}      % Det  ohne Argument
+\def\detb#1{\det[{#1}]}           % Determinat boxed Argument det[#]
+\def\Detb#1{\Det[{#1}]}           % Determinat boxed Argument Det[#]
+\def\dev{\operatorname{dev}}      % dev ohne Argument
+\def\Dev{\operatorname{Dev}}      % Dev ohne Argument
+\def\devb#1{\dev[{#1}]}           % Deviator boxed Argument dev[#]
+\def\Devb#1{\Dev[{#1}]}           % Deviator boxed Argument Dev[#]
+\def\div{\operatorname{div}}      % div ohne Argument
+\def\Div{\operatorname{Div}}      % Div ohne Argument
+\def\divb#1{\div[{#1}]}           % Divergence boxed Argument div[#]
+\def\Divb#1{\Div[{#1}]}           % Divergence boxed Argument Div[#]
+\def\grad{\operatorname{grad}}    % grad ohne Argument
+\def\Grad{\operatorname{Grad}}    % Grad ohne Argument
+\def\gradb#1{\grad[{#1}]}         % gradient boxed Argument grad[#]
+\def\Gradb#1{\Grad[{#1}]}         % Gradient boxed Argument Grad[#]
+\def\rot{\operatorname{rot}}      % rot ohne Argument
+\def\Rot{\operatorname{Rot}}      % Rot ohne Argument
+\def\rotb#1{\rot[{#1}]}           % rot boxed Argument rot[#]
+\def\Rotb#1{\Rot[{#1}]}           % Rot boxed Argument Rot[#]
+\def\skew{\operatorname{skew}}    % skew ohne Argument
+\def\Skew{\operatorname{Skew}}    % Skew ohne Argument
+\def\skewb#1{\skew[{#1}]}         % skew boxed Argument skew[#]
+\def\Skewb#1{\Skew[{#1}]}         % Skew boxed Argument Skew[#]
+\def\sym{\operatorname{sym}}      % sym ohne Argument
+\def\Sym{\operatorname{Sym}}      % Sym ohne Argument
+\def\symb#1{\sym[{#1}]}           % sym boxed Argument sym[#]
+\def\Symb#1{\Sym[{#1}]}           % Sym boxed Argument Sym[#]
+\def\tr{\operatorname{tr}}        % tr ohne Argument
+\def\trb#1{\tr[{#1}]}             % tr boxed Argument tr[#]
+%
+\def\SL3{{\itseries SL(3)}}       % SL(3)
+\def\SO3{{\it SO(3)}}             % SO(3)
+%
+\def\exp{\operatorname{exp}}      % exp
+\def\ln{\operatorname{ln}}        % ln
+%
+\def\ndim{n_{\rm dim}}            % n_dim
+\def\trial{\operatorname{trial}}  % trial
+\def\rve{${\cal RVE}$}      % RVE
+%
+% fracs................................................................
+\def\half{{\textstyle{{\frac{1}{2}}}}}         % 1/2
+\def\third{{\textstyle{1 \over 3}}}            % 1/3
+\def\fourth{{\textstyle{{1 \over 4}}}}         % 1/4
+\def\sixth{{\textstyle{{1 \over 6}}}}          % 1/6
+\def\eigth{{\textstyle{{1 \over 8}}}}          % 1/6
+\def\twothird{{\textstyle {{2 \over 3}}}}      % 2/3
+\def\thirdtwo{{\textstyle {{3 \over 2}}}}      % 3/2
+\def\sqtwo3{{\textstyle {\sqrt{2 \over 3}}}}   % sqrt(2/3)
+%
+% special tensors......................................................
+\newcommand{\reac}{{\rm reac}}
+\newcommand{\pind}{{\rm pind}}
+\newcommand{\IB}{{\rm I\kern-.25em B}}           % B-Matrix
+\newcommand{\ID}{{\rm I\kern-.25em D}}           % enhanced c. of element \bE
+\newcommand{\E}{{\rm I\kern-.25em E}}            % enhanced c. of element \bE
+\newcommand{\IE}{{\rm I\kern-.25em E}}           % enhanced c. of element \bE
+\newcommand{\IF}{{\rm I\kern-.25em F}}           % enhanced c. of element \bF_0
+\newcommand{\IH}{{\rm I\kern-.25em H}}           % H
+\newcommand{\II}{{\rm I\kern-.18em I}}           % 4th order identitytensor
+\newcommand{\ident}{{\rm I\kern-.20em I}}        % Blackboard I
+\newcommand{\IK}{{\rm I\kern-.25em K}}           % Lokalisierungstensor
+\newcommand{\IL}{{\rm I\kern-.25em L}}           % Lokalisierungstensor
+\newcommand{\IP}{{\rm I\kern-.18em P}}           % 4th order projectiontensor
+%\newcommand{\IP}{{\rm I\kern-.25em P}}          % 4th order projectiontensor
+\def\IR{{\rm I\kern-.25em R}}
+\def\IN{{\rm I\kern-.25em N}}
+%
+\newcommand{\ia}{{\rm\kern.24em                  %fourth order tensor a
+   \vrule width.02em height0.9ex depth-.05ex
+   \kern-.26em a}}
+\newcommand{\ic}{{\rm\kern.24em                  %fourth order tensor c
+   \vrule width.02em height0.9ex depth-.05ex
+   \kern-.26em c}}
+\newcommand{\IA}{{\rm\kern.22em                  %fourth order tensor A
+    \vrule width.02em
+        height0.5ex depth 0ex
+    \kern-.24em A}}
+\newcommand{\IC}{{\rm\kern.24em                  %fourth order tensor C
+   \vrule width.02em height1.4ex depth-.05ex
+   \kern-.26em C}}
+\newcommand{\IS}{{\rm\kern.24em                  %fourth order Eshelby tensor
+   \vrule width.02em height1.4ex depth-.05ex
+   \kern-.26em S}}
+%
+% verallgemeinerte Kroneckersymbole........................................
+\newcommand{\deltaII}[4] { \delta^{#1}{}_{#2}{}^{#3}{}_{#4}   }
+\newcommand{\deltaIII}[6] {\delta^{#1}{}_{#2}{}^{#3}{}_{#4}{}^{#5}{}_{#6}   }
+%
+\newcommand{\veci}[1]{\mbox{$#1_1,\ldots,#1_n$}}
+%
+% averaging tensors....................................................
+\newcommand{\Bsigmaa}[1] { \langle \Bsigma{#1} \rangle   }
+\newcommand{\Bvarepsilona}[1] { \langle \Bvarepsilon{#1} \rangle   }
+\newcommand{\sigmaa}[2] { \langle \sigma_{#1}{}_{#2} \rangle   }
+\newcommand{\varepsilona}[2] { \langle \varepsilon_{#1}{}_{#2} \rangle   }
+\newcommand{\ICa}[4] { \langle \ICa_{#1}{}_{#2}_{#3}{}_{#4} \rangle   }
+%
+%---------------------------------------------------------------------------
+%Folienstyle
+%---------------------------------------------------------------------------
+%RAHMEN
+\newcommand{\verbrahmen}[4]
+          {\unitlength1cm
+           \begin{picture}(18,00)
+             \put(10,0.1){\makebox(8,0.5)[r]{#2}}
+             \put(0,0.2){#3}
+             \put(0,-26.2){{\tiny #1}}
+             \put(0,-26){\framebox(18,26)[t]{
+                         \begin{minipage}[t]{160mm}
+                           \vspace*{2cm}
+                           {#4}
+                         \end{minipage}
+
+}}
+        %\put(0,0){0/0}
+        %\put(10,10){10/10}
+            \end{picture}
+}
+%RAHMEN
+\newcommand{\rahmen}[4]
+          {\unitlength1cm
+           \begin{picture}(18,26)
+             \put(10,26.1){\makebox(8,0.5)[r]{#2}}
+             \put(0,26.2){#3}
+             \put(0,-0.3){{\tiny #1}}
+             \put(0,0){\framebox(18,26)[t]{
+                         \begin{minipage}[t]{160mm}
+                           \vspace*{2cm}
+                           {#4}
+                         \end{minipage}
+
+}}
+            \end{picture}
+}
+%QUERRAHMEN
+\newcommand{\querrahmen}[4]
+          {\unitlength1cm
+           \special{landscape}
+           \begin{picture}(26,18)
+             \put(18,17.6){\makebox(8.5,0.5)[r]{#2}}
+             \put(0,17.7){#3}
+             \put(0,-0.3){{\tiny #1}}
+             \put(0,0){\framebox(26.5,17.5)[t]{
+                         \begin{minipage}[t]{230mm}
+                           \vspace*{2cm}
+                           {#4}
+                         \end{minipage}
+
+}}
+            \end{picture}
+}
+\newcommand{\copyr}{{$\copyright$
+                    Prof.~Dr.-Ing.~J\"org Schr\"oder,
+                    Institute of Mechanics,
+                    Civil Engineering}}
+%----------------------------------------------------------------------
+% Aenderungen von J.Loeblein
+\newcommand{\xfh}{^}
+\newcommand{\fett}[1]{%
+         \mbox{\boldmath$ #1 $}}
+\newcommand{\kr}[1]{%
+         $\pscirclebox[framesep=1.5pt,linewidth=0.2pt]{#1}$}
+%     $\begin{array}{c}\bigcirc\\[-5.3mm]{\scriptstyle #1}
+%      \end{array}$}
+
+
+
+
+
+
